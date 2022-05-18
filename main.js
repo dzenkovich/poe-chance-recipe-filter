@@ -248,7 +248,7 @@ function ChanceRecipeHelper() {
       _getTabInfo(0, 1, result => {
         if (!result.tabs) throw 'Tabs not found! Invalid response, or connectivity problem.'
         resolve(result.tabs.filter(tab => {
-          return tab.hidden === false && ALLOWED_TAB_TYPES.indexOf(tab.type) >= 0
+          return ALLOWED_TAB_TYPES.indexOf(tab.type) >= 0
         }))
       })
     }).then(tabs => {
