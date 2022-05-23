@@ -112,6 +112,10 @@ const UITemplate = `
       <p>Manage tabs you want to be skipped in items search</p>
       <div id="crh-tabs"></div>
     </section>
+    <section>
+      <h3>Same Name Rare Helper</h3>
+      <ul id="sn-items"></ul>
+    </section>
     <section class="chr-list-section">
       <p>List of all your uniques and related rare/magic/normal items</p>
       <a id="crh-refresh" class="button2 important">refresh</a>
@@ -199,6 +203,7 @@ function ChanceRecipeHelper() {
     this.$modal = $(UITemplate)
     this.$modal.$ulTabs = this.$modal.find('#crh-tabs')
     this.$modal.$ulItems = this.$modal.find('#crh-items')
+    this.$modal.$ulNames = this.$modal.find('#sn-items')
     this.$modal.$refresh = this.$modal.find('#crh-refresh')
     this.$modal.$refresh.on('click', () => {
       this.loadItems()
@@ -278,6 +283,7 @@ function ChanceRecipeHelper() {
 
   this.loadItems = () => {
     this.$modal.$ulItems.html('')
+    this.$modal.$ulNames.html('')
 
     return Promise.all(this.tabs.filter(tab => tab.isActive).map(tab => {
       return new Promise(resolve => {
@@ -292,7 +298,7 @@ function ChanceRecipeHelper() {
       this.items = [].concat.apply([], tabsItems)
 
       let { uniques, others } = this.items.reduce((result, item) => {
-        // frameTypes: 3 -> unique, 2 -> rare, 1 -> normal
+        // frameTypes: 3 -> unique, 2 -> rare, 1 -> magic
         if (item.frameType === 3) {
           // exclude unique jewels and flasks
           if (item.typeLine.search(/Jewel|Flask$/) === -1) {
@@ -327,6 +333,15 @@ function ChanceRecipeHelper() {
           return unique
         }, unique)
       })
+
+      const rareNames = others.filter(item => item.frameType === 2 && item.identified).reduce((result, item) => {
+        if (!result[item.name]) result[item.name] = 0
+        result[item.name] += 1
+        return result
+      }, {})
+      this.$modal.$ulNames.append(Object.keys(rareNames).filter(name => rareNames[name] > 1).map(name => {
+        return `<li>${name}</li>`
+      }))
 
       this.$modal.$ulItems.append(uniques.map(unique => {
         let $item = _renderTemplate(UniqueTemplate, {
