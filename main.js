@@ -301,7 +301,7 @@ function ChanceRecipeHelper() {
         // frameTypes: 3 -> unique, 2 -> rare, 1 -> magic
         if (item.frameType === 3) {
           // exclude unique jewels and flasks
-          if (item.typeLine.search(/Jewel|Flask$/) === -1) {
+          if (item.baseType.search(/Jewel|Flask$/) === -1) {
             result.uniques.push(item)
           }
         }
@@ -318,7 +318,7 @@ function ChanceRecipeHelper() {
         unique.items = {}
 
         others.reduce((result, item) => {
-          if (item.typeLine === unique.typeLine) {
+          if (item.baseType === unique.baseType) {
             if (item.frameType === 2) {
               unique.items.rare = item
             }
@@ -346,7 +346,7 @@ function ChanceRecipeHelper() {
       this.$modal.$ulItems.append(uniques.map(unique => {
         let $item = _renderTemplate(UniqueTemplate, {
           name: unique.name.replace(/<<.+>>/g, ''),
-          type: unique.typeLine,
+          type: unique.baseType,
           width: unique.w * CELL_SIZE,
           height: unique.h * CELL_SIZE,
           icon: unique.icon,
@@ -372,14 +372,14 @@ function ChanceRecipeHelper() {
     let sets = this.uniques.reduce((result, unique) => {
       if (this.activeItems.indexOf(unique.id) >= 0) {
         if (!unique.items.rare) {
-          result.rare[unique.typeLine] = true
-          result.normal[unique.typeLine] = true
+          result.rare[unique.baseType] = true
+          result.normal[unique.baseType] = true
         }
         if (!unique.items.magic) {
-          result.magic[unique.typeLine] = true
-          result.normal[unique.typeLine] = true
+          result.magic[unique.baseType] = true
+          result.normal[unique.baseType] = true
         }
-        if (!unique.items.normal) result.normal[unique.typeLine] = true
+        if (!unique.items.normal) result.normal[unique.baseType] = true
       }
 
       return result
