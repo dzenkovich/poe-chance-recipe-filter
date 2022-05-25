@@ -371,10 +371,7 @@ function ChanceRecipeHelper() {
   this.generateFilterCode = () => {
     let sets = this.uniques.reduce((result, unique) => {
       if (this.activeItems.indexOf(unique.id) >= 0) {
-        if (!unique.items.rare) {
-          result.rare[unique.baseType] = true
-          result.normal[unique.baseType] = true
-        }
+        if (!unique.items.rare) result.rare[unique.baseType] = true
         if (!unique.items.magic) {
           result.magic[unique.baseType] = true
           result.normal[unique.baseType] = true
